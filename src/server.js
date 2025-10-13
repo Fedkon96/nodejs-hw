@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import pino from 'pino';
 import pinoHttp from 'pino-http';
 
 dotenv.config();
@@ -8,9 +9,19 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
+const prettyLogger = pino({
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      translateTime: 'SYS:standard',
+    },
+  },
+});
+
 app.use(cors());
 app.use(express.json());
-app.use(pinoHttp());
+app.use(pinoHttp({ logger: prettyLogger }));
 
 app.get('/notes', (req, res) => {
   res.status(200).json({ message: 'Retrieved all notes' });
