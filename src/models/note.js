@@ -19,7 +19,7 @@ const noteSchema = new Schema(
     content: { type: String, trim: true, default: '' },
     tag: { type: String, enum: allowedTags, default: 'Todo' },
   },
-  { timestamps: true, versionKey: false },
+  { timestamps: true, versionKey: false }
 );
 
 export const Note = model('Note', noteSchema);

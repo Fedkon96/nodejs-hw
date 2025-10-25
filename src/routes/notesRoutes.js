@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import {
-	getAllNotes,
-	getNoteById,
-	createNote,
-	updateNote,
-	deleteNote,
+  getAllNotes,
+  getNoteById,
+  createNote,
+  updateNote,
+  deleteNote,
 } from '../controllers/notesController.js';
 
 const router = Router();

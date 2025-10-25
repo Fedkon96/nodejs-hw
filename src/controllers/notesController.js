@@ -40,7 +40,9 @@ export const createNote = async (req, res, next) => {
 export const updateNote = async (req, res, next) => {
   try {
     const { noteId } = req.params;
-    const updated = await Note.findOneAndUpdate({ _id: noteId }, req.body, { new: true });
+    const updated = await Note.findOneAndUpdate({ _id: noteId }, req.body, {
+      new: true,
+    });
     if (!updated) {
       next(createHttpError(404, 'Note not found'));
       return;
