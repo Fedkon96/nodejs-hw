@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import { connectMongoDB } from './db/connectMongoDB.js';
 import notesRoutes from './routes/notesRoutes.js';
+import { errors as celebrateErrors } from 'celebrate';
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -13,15 +14,16 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
-// global middleware
-app.use(logger); // pino-http logger
+
+app.use(logger);
 app.use(express.json());
 app.use(cors());
 
-// routes
+
 app.use(notesRoutes);
 
-// 404 and error handlers
+
+app.use(celebrateErrors());
 app.use(notFoundHandler);
 app.use(errorHandler);
 
