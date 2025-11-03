@@ -7,7 +7,7 @@ export const getAllNotes = async (req, res, next) => {
     const pageNum = Number(page) || 1;
     const limit = Math.min(Math.max(Number(perPage) || 10, 5), 20);
 
-    const filter = {};
+    const filter = { userId: req.user._id };
     if (tag) filter.tag = tag;
     if (search && String(search).trim() !== '') {
       filter.$text = { $search: String(search) };
@@ -39,7 +39,7 @@ export const getAllNotes = async (req, res, next) => {
 export const getNoteById = async (req, res, next) => {
   try {
     const { noteId } = req.params;
-    const note = await Note.findById(noteId);
+    const note = await Note.findOne({ _id: noteId, userId: req.user._id });
     if (!note) {
       next(createHttpError(404, 'Note not found'));
       return;
@@ -53,7 +53,7 @@ export const getNoteById = async (req, res, next) => {
 // POST /notes
 export const createNote = async (req, res, next) => {
   try {
-    const newNote = await Note.create(req.body);
+    const newNote = await Note.create({ ...req.body, userId: req.user._id });
     res.status(201).json(newNote);
   } catch (err) {
     next(err);
@@ -64,9 +64,13 @@ export const createNote = async (req, res, next) => {
 export const updateNote = async (req, res, next) => {
   try {
     const { noteId } = req.params;
-    const updated = await Note.findOneAndUpdate({ _id: noteId }, req.body, {
-      new: true,
-    });
+    const updated = await Note.findOneAndUpdate(
+      { _id: noteId, userId: req.user._id },
+      req.body,
+      {
+        new: true,
+      }
+    );
     if (!updated) {
       next(createHttpError(404, 'Note not found'));
       return;
@@ -81,7 +85,10 @@ export const updateNote = async (req, res, next) => {
 export const deleteNote = async (req, res, next) => {
   try {
     const { noteId } = req.params;
-    const deleted = await Note.findOneAndDelete({ _id: noteId });
+    const deleted = await Note.findOneAndDelete({
+      _id: noteId,
+      userId: req.user._id,
+    });
     if (!deleted) {
       next(createHttpError(404, 'Note not found'));
       return;
