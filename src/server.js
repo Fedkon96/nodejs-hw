@@ -24,8 +24,10 @@ app.use(cookieParser());
 app.use(authRoutes);
 app.use(notesRoutes);
 
-app.use(celebrateErrors());
+// notFoundHandler должен быть сразу после маршрутов, чтобы возвращать 404
+// для несуществующих путей, и только потом применять celebrate errors.
 app.use(notFoundHandler);
+app.use(celebrateErrors());
 app.use(errorHandler);
 
 await connectMongoDB();
